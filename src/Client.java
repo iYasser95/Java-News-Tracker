@@ -39,7 +39,10 @@ public class Client {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String body = response.body();
         InputStream input = client.send(request, HttpResponse.BodyHandlers.ofInputStream()).body();
+        mapData(input);
+    }
 
+    private static void mapData(InputStream input) throws Exception {
         dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder dBuilder = dbf.newDocumentBuilder();
         Document doc = dBuilder.parse(input);
@@ -52,13 +55,19 @@ public class Client {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) node;
-                titles[i] = eElement.getElementsByTagName(Constants.TITLE.rawValue)
-                        .item(0).getTextContent()
-                        .replaceAll(Constants.REGEX.rawValue, "");
-                dates[i] = eElement.getElementsByTagName(Constants.PUBLISH_DATE.rawValue).item(0).getTextContent();
-                links[i] = eElement.getElementsByTagName(Constants.LINK.rawValue).item(0).getTextContent();
+                titles[i] = getTextWith(eElement, Constants.TITLE);
+                dates[i] = getTextWith(eElement, Constants.PUBLISH_DATE);
+                links[i] = getTextWith(eElement, Constants.LINK);
             }
         }
         news = new News(titles, dates, links);
+    }
+
+    private static String getTextWith(Element eElement, Constants constant) {
+        String text = eElement.getElementsByTagName(constant.rawValue).item(0).getTextContent();
+        if (constant == Constants.TITLE) {
+            text = text.replaceAll(Constants.REGEX.rawValue, "");
+        }
+        return text;
     }
 }
