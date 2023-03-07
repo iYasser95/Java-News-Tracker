@@ -3,19 +3,18 @@ import java.awt.*;
 
 public class Main {
 
-    private static String[] titles;
-    private static String[] dates;
-    private static String[] links;
+    private static News news;
     public static void main(String[] args) throws Exception {
         setContentWith(new Client());
         setup();
     }
     private static void setup() {
         int y = 16;
+        int length = news.getTitles().length;
         JFrame frame = new JFrame();
         JPanel panel = new JPanel();
 
-        for (int i=0; i<titles.length; i++) {
+        for (int i = 0; i< length; i++) {
             JTextArea label = new JTextArea();
             label.setBounds(16, y, 800, 50);
             label.setEditable(false);
@@ -43,12 +42,13 @@ public class Main {
     }
 
     private static void setContentWith(Client client) {
-        titles = client.getTitles();
-        dates = client.getDates();
-        links = client.getLinks();
+        news = client.getNews();
     }
 
     private static String labelText(int index) {
+        String[] titles = news.getTitles();
+        String[] dates = news.getDates();
+        String[] links = news.getLinks();
         return "Title: " + titles[index] + "\n" + "Date: " + dates[index] + "\n" + "Link: " + links[index];
     }
 }

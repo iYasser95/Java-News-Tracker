@@ -14,20 +14,9 @@ import java.net.http.HttpResponse;
 
 public class Client {
     private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    private static String[] titles;
-    private static String[] dates;
-    private static String[] links;
-
-    public String[] getTitles() {
-        return titles;
-    }
-
-    public String[] getDates() {
-        return dates;
-    }
-
-    public String[] getLinks() {
-        return links;
+    private static News news;
+    public News getNews() {
+        return news;
     }
 
     Client() {
@@ -56,9 +45,9 @@ public class Client {
         Document doc = dBuilder.parse(input);
         Element element = doc.getDocumentElement();
         NodeList nodeList = element.getElementsByTagName(Constants.ITEM.rawValue);
-        titles = new String[nodeList.getLength()];
-        dates = new String[nodeList.getLength()];
-        links = new String[nodeList.getLength()];
+        String[] titles = new String[nodeList.getLength()];
+        String[] dates = new String[nodeList.getLength()];
+        String[] links = new String[nodeList.getLength()];
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -70,5 +59,6 @@ public class Client {
                 links[i] = eElement.getElementsByTagName(Constants.LINK.rawValue).item(0).getTextContent();
             }
         }
+        news = new News(titles, dates, links);
     }
 }
